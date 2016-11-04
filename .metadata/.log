@@ -1,0 +1,13 @@
+!SESSION 2016-11-04 14:39:27.706 -----------------------------------------------
+eclipse.buildId=4.3.2.M20140221-1700
+java.version=1.8.0_112
+java.vendor=Oracle Corporation
+BootLoader constants: OS=macosx, ARCH=x86_64, WS=cocoa, NL=en_US
+Framework arguments:  -product org.eclipse.epp.package.jee.product -keyring /Users/yzhao/.eclipse_keyring -showlocation
+Command-line arguments:  -os macosx -ws cocoa -arch x86_64 -product org.eclipse.epp.package.jee.product -keyring /Users/yzhao/.eclipse_keyring -showlocation
+
+!ENTRY com.google.gdt.eclipse.suite 1 0 2016-11-04 14:44:34.591
+!MESSAGE Registering: com.google.appengine.eclipse.sdkbundle_1.9.7
+
+!ENTRY com.google.gdt.eclipse.suite 1 0 2016-11-04 14:44:34.674
+!MESSAGE Registering: com.google.gwt.eclipse.sdkbundle_2.6.0
