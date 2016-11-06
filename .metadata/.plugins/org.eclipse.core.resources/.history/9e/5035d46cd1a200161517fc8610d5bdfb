@@ -1,0 +1,28 @@
+package finalProj;
+
+import finalProj.PrioritySkipList.Node;
+
+public class SkipQueue<T> implements ParallelPriorityQueue{
+
+	PrioritySkipList<T> skiplist;
+	public SkipQueue(){
+		skiplist = new PrioritySkipList<T>();
+	}
+	
+	public boolean add(T item, int score){
+		Node<T> node = (Node<T>)new Node(item, score);
+		return skiplist.add(node);
+	}
+	
+	
+
+	public T removeMin() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		System.out.println("helloworld");
+	}
+}

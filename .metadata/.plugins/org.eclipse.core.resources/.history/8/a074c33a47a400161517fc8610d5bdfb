@@ -1,0 +1,34 @@
+package lockfreepriorityqueue.nonlinearlizable;
+
+import lockfreepriorityqueue.nonlinearlizable.PrioritySkipList.Node;
+
+public class SkipQueue<T> implements ParallelPriorityQueue<T>{
+
+	PrioritySkipList<T> skiplist;
+	public SkipQueue(){
+		skiplist = new PrioritySkipList<T>();
+	}
+	
+	public boolean add(T item){
+		//Node<T> node = (Node<T>)new Node<T>(item, score);
+		return skiplist.add(item);
+	}
+	
+
+	public T removeMin() {
+		Node<T> node = skiplist.findAndMarkMin();
+		if (node != null){
+			skiplist.remove(node);
+			return node.item;
+		} else {
+			return null;
+		}
+	}
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		for(int i = 0; i < 10; i++){
+			System.out.println(PrioritySkipList.randomLevel());
+		}
+	}
+}

@@ -1,0 +1,57 @@
+package lockfreepriorityqueue.nonlinearlizable;
+
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicMarkableReference;
+
+public class PrioritySkipList<T> {
+	public static final class Node<T>{
+		final T item;
+		final int value;
+		AtomicBoolean marked;
+
+		final AtomicMarkableReference<Node<T>>[] next = null;
+		
+		// sentinel node constructor
+		public Node(int myPriority){
+			this.value = myPriority;
+			item = null;
+		}
+		// ordinary node constructor
+		public Node(T x, int myPriority){
+			this.item = x;
+			this.value = myPriority;
+		}
+	}
+	
+	static final int MAX_LEVEL = 30;
+	final Node<T> head = new Node<T>(Integer.MIN_VALUE); 
+	final Node<T> tail = new Node<T>(Integer.MAX_VALUE);
+	
+	public PrioritySkipList(){
+		for (int i = 0; i < head.next.length; i++) {
+			head.next[i] = new AtomicMarkableReference<Node<T>>(tail, false);
+		}
+	}
+	boolean add(Node<T> node){
+		return true;
+	}
+	
+	boolean remove(Node<T> node){
+		return true;
+	}
+	
+	public Node<T> findAndMarkMin(){
+		Node<T> curr = null, succ = null;
+		curr = head.next[0].getReference();
+		while (curr != tail) {
+			if (!curr.marked.get()){
+				if (curr.marked.compareAndSet(false, true)){
+					return curr;
+				} else {
+					curr = curr.next[0].getReference();
+				}
+			}
+		}
+		return null; // no unmarked nodes
+	}
+}

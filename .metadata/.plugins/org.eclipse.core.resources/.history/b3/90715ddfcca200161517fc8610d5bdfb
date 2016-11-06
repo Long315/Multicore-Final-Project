@@ -1,0 +1,24 @@
+package finalProj;
+
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicMarkableReference;
+
+public final class Node<T> {
+	final T item;
+	final int value;
+	AtomicBoolean marked;
+	
+	final AtomicMarkableReference<Node<T>>[] next = null;
+	
+	// sentinel node constructor
+	public Node(int myPriority){
+		this.value = myPriority;
+		item = null;
+	}
+	// ordinary node constructor
+	public Node(T x, int myPriority){
+		this.item = x;
+		this.value = myPriority;
+	}
+	
+}
