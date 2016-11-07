@@ -54,9 +54,9 @@ public class MultiQueue<T> implements ParallelPriorityQueue<T>{
 	
 	public static void main(String[] args) {
         MultiQueue<Integer> mq = new MultiQueue<Integer>(4, 1);
-	    mq.add(new Integer(5));
-	    mq.add(new Integer(4));
-	    mq.add(new Integer(6));
+	    mq.add(5);
+	    mq.add(9);
+	    mq.add(3);
 	    System.out.format("%d\n", mq.removeMin());
 	}
 

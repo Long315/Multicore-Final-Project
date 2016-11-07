@@ -8,22 +8,29 @@ public class PrioritySkipList<T> {
 	private final Comparator<? super T> comparator;
 	public static final class Node<T>{
 		final T item;
-		final int value;
 		AtomicBoolean marked;
-
+		private int topLevel;
 		final AtomicMarkableReference<Node<T>>[] next;
+		int key = 0;
 		
 		// sentinel node constructor
-		public Node(int myPriority){
-			this.value = null;
-			item = null;
+		public Node(int key){
+			item = (T) new Integer(10);
+			this.key = key;
 			next = (AtomicMarkableReference<Node<T>>[]) new AtomicMarkableReference[MAX_LEVEL + 1];
-			
+			for (int i = 0; i < next.length; i++){
+				next[i] = new AtomicMarkableReference<Node<T>>(null, false);
+			}
+			topLevel = MAX_LEVEL;
 		}
 		// ordinary node constructor
-		public Node(T x, int myPriority){
+		public Node(T x, int height){
 			this.item = x;
-			this.value = myPriority;
+			next = (AtomicMarkableReference<Node<T>>[]) new AtomicMarkableReference[MAX_LEVEL + 1];
+			for (int i = 0; i < next.length; i++){
+				next[i] = new AtomicMarkableReference<Node<T>>(null, false);
+			}
+			topLevel = height;
 		}
 	}
 	
@@ -43,11 +50,11 @@ public class PrioritySkipList<T> {
 		Node<T>[] preds = (Node<T>[]) new Node[MAX_LEVEL + 1];
 		Node<T>[] succs = (Node<T>[]) new Node[MAX_LEVEL + 1];
 		while (true){
-//			boolean found = find(node, preds, succs);
+			find(x, preds, succs);
 //			if (found){
 //				return false;
 //			}
-			Node<T> newNode = new Node(x, topLevel);
+			Node<T> newNode = new Node<T>(x, topLevel);
 			for (int level = bottomLevel; level <= topLevel; level++){
 				Node<T> succ = succs[level];
 				newNode.next[level].set(succ, false);
@@ -55,6 +62,8 @@ public class PrioritySkipList<T> {
 			Node<T> pred = preds[bottomLevel];
 			Node<T> succ = preds[bottomLevel];
 			newNode.next[bottomLevel].set(succ, false);
+			System.out.println(succ.item);
+			System.out.println(newNode.item);
 			if (!pred.next[bottomLevel].compareAndSet(succ, newNode, false, false)){
 				continue;
 			}
@@ -65,6 +74,7 @@ public class PrioritySkipList<T> {
 					if (pred.next[level].compareAndSet(succ, newNode, false, false)){
 						break;
 					}
+					find(x, preds, succs);
 				}
 			}
 			return true;
@@ -96,22 +106,36 @@ public class PrioritySkipList<T> {
 	    return Math.min(lvl, MAX_LEVEL);
 	}
 	
-	public int find(T x, Node<T>[] preds, Node<T>[] succs){
-		int lFound = -1;
-		Node<T> pred = head;
-		for (int level = MAX_LEVEL; level >= 0; level--){
-			Node<T> curr = pred.next[level].get(null); /////////
-			while (compare(x, curr.item) == 1){
-				pred = curr; 
-				curr = pred.next[level].get(null);  /////////
+	public boolean find(T x, Node<T>[] preds, Node<T>[] succs){
+		int bottomLevel = 0;
+		boolean[] marked = {false};
+		boolean snip;
+		Node<T> pred = null, curr = null, succ = null;
+		retry:
+			while (true){
+				pred = head;
+				for (int level = MAX_LEVEL; level >= bottomLevel; level--){
+					curr = pred.next[level].getReference();
+					while (true){
+						succ = curr.next[level].get(marked);
+						while (marked[0]){
+							snip = pred.next[level].compareAndSet(curr, succ, false, false);
+							if (!snip) continue retry;
+							curr = pred.next[level].getReference();
+							succ = curr.next[level].get(marked);
+						}
+						if (compare(x, curr.item) == 1){
+		    				pred = curr;
+		    				curr = succ;
+		    			} else {
+		    				break;
+		    			}
+					}
+					preds[level] = pred;
+					succs[level] = curr;
+				}
+				return curr.item.equals(x);
 			}
-			if(lFound == -1 && x.equals(curr.item)){
-				lFound = level;
-			}
-			preds[level] = pred;
-			succs[level] = curr;
-		}
-		return lFound;
 	}
 	
     private int compare(T k1, T k2) {
@@ -124,10 +148,38 @@ public class PrioritySkipList<T> {
             return 1;
         else {
             if (comparator == null)
+            	//return 1;
                 return ((Comparable<? super T>) k1).compareTo(k2);
             else
+            	//return 1;
                 return comparator.compare(k1, k2);
         }
-
+    }
+	class NaturalComparator<T extends Comparable<? super T>> implements Comparator<T> {
+		  public int compare(T a, T b) {
+		    return a.compareTo(b);
+		  }
+		}
+    boolean contains(T x){
+    	int bottomLevel = 0;
+    	boolean[] marked = {false};
+    	Node<T> pred = head, curr = null, succ = null;
+    	for (int level = MAX_LEVEL; level >= bottomLevel; level--){
+    		curr = pred.next[level].getReference();
+    		while (true){
+    			succ = curr.next[level].get(marked);
+    			while (marked[0]){
+    				curr = pred.next[level].getReference();
+    				succ = curr.next[level].get(marked);
+    			}
+    			if (compare(x, curr.item) == 1){
+    				pred = curr;
+    				curr = succ;
+    			} else {
+    				break;
+    			}
+    		}
+    	}
+    	return curr.item.equals(x);
     }
 }
