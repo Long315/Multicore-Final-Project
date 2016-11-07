@@ -34,6 +34,9 @@ public class MultiQueue<T> implements ParallelPriorityQueue<T>{
 			for(int i = 0; i < 2; i++){
 				while(candidate.get(i) == null){
 					idx[i] = randomIdx();
+					while (i == 1 && idx[1] == idx[0]) {
+						idx[i] = randomIdx();
+					}
 					candidate.set(i, q.get(idx[i]).peek());
 				}
 			}
