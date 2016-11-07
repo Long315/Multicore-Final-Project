@@ -1,6 +1,5 @@
 package lockfreepriorityqueue.nonlinearlizable;
 
-import lockfreepriorityqueue.linearizable.LockFreePriorityQueue;
 import lockfreepriorityqueue.nonlinearlizable.PrioritySkipList.Node;
 
 public class SkipQueue<T> implements ParallelPriorityQueue<T>{
@@ -29,12 +28,12 @@ public class SkipQueue<T> implements ParallelPriorityQueue<T>{
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		SkipQueue<Integer> q = new SkipQueue<Integer>();
-		q.add(5);
-		q.add(2);
-		q.add(7);
-		q.add(10);
-		q.add(4);
-		System.out.println(q);
+//		q.add(5);
+//		q.add(2);
+//		q.add(7);
+//		q.add(10);
+//		q.add(4);
+		System.out.println(q.skiplist.contains(Integer.MAX_VALUE));
 //		while(!q.isEmpty()){
 //			System.out.println(q.removeMin());
 //		}
