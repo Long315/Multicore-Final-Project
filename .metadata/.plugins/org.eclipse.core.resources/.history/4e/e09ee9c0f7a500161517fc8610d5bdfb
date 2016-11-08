@@ -616,6 +616,5 @@ public class LockFreePriorityQueue<E> extends AbstractQueue<E> {
 		while(!q.isEmpty()){
 			System.out.println(q.poll());
 		}
-		System.out.println(q.poll());
 	}
 }
