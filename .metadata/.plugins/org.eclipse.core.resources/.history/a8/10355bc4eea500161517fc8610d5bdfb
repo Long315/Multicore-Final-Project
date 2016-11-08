@@ -1,0 +1,63 @@
+
+package multiqueue;
+import java.util.ArrayList;
+import java.util.Random;
+import java.lang.Integer;
+import java.util.Comparator;
+import Interface.ParallelPriorityQueue;;
+
+public class MultiQueue<T> implements ParallelPriorityQueue<T>{
+	ArrayList<PriorityBlockingQueue<T>> q;      
+    int size;	
+	Random r = new Random();
+	Comparator<? super T> cmp;
+	public MultiQueue(int c, int t) {
+	    // c = constant (defines constant time access to queue as 1/c)
+	    // t = num threads accessing queue
+		size = c * t;
+	    q = new ArrayList<PriorityBlockingQueue<T>>();
+        for (int i = 0; i < size; i++){
+			q.add(new PriorityBlockingQueue<T>());
+		}
+	}
+	public boolean add(T item){
+		
+	    while(!q.get(randomIdx()).add(item));
+		return true;
+	}
+	public T poll() {
+	    T result = null;
+	    while(result == null){
+	        ArrayList<T> candidate = new ArrayList<T>();
+			int[] idx = new int[2];
+			candidate.add(null);
+			candidate.add(null);
+			for(int i = 0; i < 2; i++){
+				while(candidate.get(i) == null){
+					idx[i] = randomIdx();
+					candidate.set(i, q.get(idx[i]).peek());
+				}
+			}
+			int mindex;
+			if (((Comparable<? super T>) candidate.get(0)
+				).compareTo(candidate.get(1)) < 0)
+				mindex = 0;
+			else
+				mindex = 1;
+			result = q.get(idx[mindex]).pollAfterPeek();
+	    }
+		return result;
+	}
+	
+	private int randomIdx(){
+		return Math.abs(r.nextInt()) % size;
+	}
+	
+	public static void main(String[] args) {
+        MultiQueue<Integer> mq = new MultiQueue<Integer>(4, 1);
+	    mq.add(5);
+	    mq.add(9);
+	    mq.add(3);
+	    System.out.format("%d\n", mq.poll());
+	}
+}
