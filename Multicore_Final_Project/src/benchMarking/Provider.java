@@ -1,8 +1,8 @@
 package benchMarking;
 
-import java.util.concurrent.Callable;
+import interfacepackage.ParallelPriorityQueue;
 
-import Interface.ParallelPriorityQueue;
+import java.util.concurrent.Callable;
 
 public class Provider<T> implements Callable<T>{
 	  int Id;

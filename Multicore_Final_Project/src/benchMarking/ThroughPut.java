@@ -1,5 +1,7 @@
 package benchMarking;
 
+import interfacepackage.ParallelPriorityQueue;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -8,7 +10,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import Interface.ParallelPriorityQueue;
 import multiqueue.MultiQueue;
 
 public class ThroughPut {
