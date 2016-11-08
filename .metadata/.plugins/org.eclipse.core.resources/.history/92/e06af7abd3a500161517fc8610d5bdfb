@@ -39,9 +39,6 @@ public class SkipQueue<T> implements ParallelPriorityQueue<T>{
 		System.out.print(q.poll());
 		System.out.print(q.poll());
 		System.out.print(q.poll());
-		System.out.print(q.poll());
-		System.out.print(q.poll());
-		System.out.print(q.poll());
 		
 	}
 

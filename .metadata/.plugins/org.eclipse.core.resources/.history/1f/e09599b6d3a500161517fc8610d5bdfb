@@ -16,11 +16,11 @@ public final class PrioritySkipList<T> implements Iterable<T> {
 		}
 	}
 
-	// public static int randomLevel() {
-	// int lvl = (int)(Math.log(1.-Math.random())/Math.log(1.-0.5));
-	// return Math.min(lvl, MAX_LEVEL);
-	// }
-
+//	public static int randomLevel() {
+//    int lvl = (int)(Math.log(1.-Math.random())/Math.log(1.-0.5));
+//    return Math.min(lvl, MAX_LEVEL);
+//}
+	
 	private static int randomLevel() {
 		int x = randomSeed;
 		x ^= x << 13;
@@ -40,31 +40,31 @@ public final class PrioritySkipList<T> implements Iterable<T> {
 		Node<T>[] succs = (Node<T>[]) new Node[MAX_LEVEL + 1];
 		while (true) {
 			boolean found = find(node, preds, succs);
-
-			for (int level = bottomLevel; level <= node.topLevel; level++) {
-				Node<T> succ = succs[level];
-				node.next[level].set(succ, false);
-			}
-
-			Node<T> pred = preds[bottomLevel];
-			Node<T> succ = succs[bottomLevel];
-			node.next[bottomLevel].set(succ, false);
-			if (!pred.next[bottomLevel].compareAndSet(succ, node, false, false)) {
-				continue;
-			}
-
-			for (int level = bottomLevel + 1; level <= node.topLevel; level++) {
-				while (true) {
-					pred = preds[level];
-					succ = succs[level];
-					if (pred.next[level]
-							.compareAndSet(succ, node, false, false))
-						break;
-					find(node, preds, succs);
+			
+				for (int level = bottomLevel; level <= node.topLevel; level++) {
+					Node<T> succ = succs[level];
+					node.next[level].set(succ, false);
 				}
-			}
-			return true;
-
+				
+				Node<T> pred = preds[bottomLevel];
+				Node<T> succ = succs[bottomLevel];
+				node.next[bottomLevel].set(succ, false);
+				if (!pred.next[bottomLevel].compareAndSet(succ, node, false, false)) {
+					continue;
+				}
+				
+				for (int level = bottomLevel + 1; level <= node.topLevel; level++) {
+					while (true) {
+						pred = preds[level];
+						succ = succs[level];
+						if (pred.next[level].compareAndSet(succ, node, false,
+								false))
+							break;
+						find(node, preds, succs);
+					}
+				}
+				return true;
+			
 		}
 	}
 
@@ -75,30 +75,30 @@ public final class PrioritySkipList<T> implements Iterable<T> {
 		Node<T> succ;
 		while (true) {
 			boolean found = find(node, preds, succs);
-
-			for (int level = node.topLevel; level >= bottomLevel + 1; level--) {
-				boolean[] marked = { false };
-				succ = node.next[level].get(marked);
-				while (!marked[0]) {
-					node.next[level].attemptMark(succ, true);
+			
+				for (int level = node.topLevel; level >= bottomLevel + 1; level--) {
+					boolean[] marked = { false };
 					succ = node.next[level].get(marked);
+					while (!marked[0]) { 
+						node.next[level].attemptMark(succ, true);
+						succ = node.next[level].get(marked);
+					}
 				}
-			}
 
-			boolean[] marked = { false };
-			succ = node.next[bottomLevel].get(marked);
-
-			while (true) {
-				boolean iMarkedIt = node.next[bottomLevel].compareAndSet(succ,
-						succ, false, true);
-				succ = succs[bottomLevel].next[bottomLevel].get(marked);
-				if (iMarkedIt) {
-					find(node, preds, succs);
-					return true;
-				} else if (marked[0])
-					return false;
-			}
-
+				boolean[] marked = { false };
+				succ = node.next[bottomLevel].get(marked);
+				
+				while (true) {
+					boolean iMarkedIt = node.next[bottomLevel].compareAndSet(
+							succ, succ, false, true);
+					succ = succs[bottomLevel].next[bottomLevel].get(marked);
+					if (iMarkedIt) {
+						find(node, preds, succs);
+						return true;
+					} else if (marked[0])
+						return false;
+				}
+			
 		}
 	}
 
@@ -114,7 +114,7 @@ public final class PrioritySkipList<T> implements Iterable<T> {
 				}
 			}
 		}
-		return null;
+		return null; 
 	}
 
 	boolean find(Node<T> node, Node<T>[] preds, Node<T>[] succs) {
@@ -147,7 +147,7 @@ public final class PrioritySkipList<T> implements Iterable<T> {
 				preds[level] = pred;
 				succs[level] = curr;
 			}
-			return (curr.priority == node.priority);
+			return (curr.priority == node.priority); 
 		}
 	}
 
