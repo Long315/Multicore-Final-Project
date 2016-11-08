@@ -16,11 +16,6 @@ public final class PrioritySkipList<T> implements Iterable<T> {
 		}
 	}
 
-//	public static int randomLevel() {
-//    int lvl = (int)(Math.log(1.-Math.random())/Math.log(1.-0.5));
-//    return Math.min(lvl, MAX_LEVEL);
-//}
-	
 	private static int randomLevel() {
 		int x = randomSeed;
 		x ^= x << 13;
@@ -62,7 +57,7 @@ public final class PrioritySkipList<T> implements Iterable<T> {
 						if (pred.next[level].compareAndSet(succ, node, false,
 								false))
 							break;
-						find(node, preds, succs);
+						find(node, preds, succs); // find new preds and succs
 					}
 				}
 				return true;
@@ -83,7 +78,7 @@ public final class PrioritySkipList<T> implements Iterable<T> {
 				for (int level = node.topLevel; level >= bottomLevel + 1; level--) {
 					boolean[] marked = { false };
 					succ = node.next[level].get(marked);
-					while (!marked[0]) { 
+					while (!marked[0]) { // until I succeed in marking
 						node.next[level].attemptMark(succ, true);
 						succ = node.next[level].get(marked);
 					}
@@ -118,7 +113,7 @@ public final class PrioritySkipList<T> implements Iterable<T> {
 				}
 			}
 		}
-		return null; 
+		return null; // no unmarked nodes
 	}
 
 	boolean find(Node<T> node, Node<T>[] preds, Node<T>[] succs) {
@@ -128,11 +123,12 @@ public final class PrioritySkipList<T> implements Iterable<T> {
 		Node<T> pred = null, curr = null, succ = null;
 		retry: while (true) {
 			pred = head;
+			// curr = null; not needed line removed by Nir
 			for (int level = MAX_LEVEL; level >= bottomLevel; level--) {
 				curr = pred.next[level].getReference();
 				while (true) {
 					succ = curr.next[level].get(marked);
-					while (marked[0]) {
+					while (marked[0]) { // replace curr if marked
 						snip = pred.next[level].compareAndSet(curr, succ,
 								false, false);
 						if (!snip)

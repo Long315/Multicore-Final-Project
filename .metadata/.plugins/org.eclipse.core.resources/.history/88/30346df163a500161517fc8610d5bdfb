@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.lang.Integer;
 import java.util.Comparator;
-import finalProj.ParallelPriorityQueue;;
+
 
 public class MultiQueue<T> implements ParallelPriorityQueue<T>{
 	ArrayList<PriorityBlockingQueue<T>> q;      
@@ -58,6 +58,6 @@ public class MultiQueue<T> implements ParallelPriorityQueue<T>{
 	    mq.add(5);
 	    mq.add(9);
 	    mq.add(3);
-	    System.out.format("%d\n", mq.poll());
+	    System.out.format("%d\n", mq.removeMin());
 	}
 }
