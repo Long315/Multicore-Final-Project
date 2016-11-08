@@ -32,7 +32,7 @@ public class SkipQueue<T> implements ParallelPriorityQueue{
 	}
 
 	public boolean add(Integer item) {
-		Node<T> node = (Node<T>)new Node<T>((T) item, item);
+		Node<T> node = (Node<T>)new Node<T>(item);
 		return skiplist.add(node);
 	}
 

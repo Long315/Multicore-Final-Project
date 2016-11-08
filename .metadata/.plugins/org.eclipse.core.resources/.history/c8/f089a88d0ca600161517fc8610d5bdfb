@@ -1,0 +1,5 @@
+package lockfreepriorityqueue.linearizable;
+
+public class LockFreePriorityQueueWrapper {
+
+}

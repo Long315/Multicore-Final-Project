@@ -16,6 +16,8 @@
 
 package lockfreepriorityqueue.linearizable;
 
+import interfacepackage.ParallelPriorityQueue;
+
 import java.util.ArrayList;
 import java.util.AbstractQueue;
 import java.util.Iterator;
@@ -23,6 +25,8 @@ import java.util.NoSuchElementException;
 import java.util.Random;
 import java.util.Comparator;
 import java.util.concurrent.atomic.AtomicMarkableReference;
+
+import lockfreepriorityqueue.nonlinearlizable.PrioritySkipList;
 
 /**
  * It is a thread-safe and lock-free queue. This lock free priority queue
@@ -37,7 +41,7 @@ import java.util.concurrent.atomic.AtomicMarkableReference;
  * 
  */
 
-public class LockFreePriorityQueue<E> extends AbstractQueue<E> {
+public class LockFreePriorityQueue<E> extends AbstractQueue<E> implements ParallelPriorityQueue{
 
     /**
      * Internal Priority Queue node class.

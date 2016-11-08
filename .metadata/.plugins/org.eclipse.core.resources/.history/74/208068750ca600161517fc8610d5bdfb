@@ -24,6 +24,8 @@ import java.util.Random;
 import java.util.Comparator;
 import java.util.concurrent.atomic.AtomicMarkableReference;
 
+import lockfreepriorityqueue.nonlinearlizable.PrioritySkipList;
+
 /**
  * It is a thread-safe and lock-free queue. This lock free priority queue
  * implementation, which based on the algorithm defined in the follwoing paper:
@@ -602,4 +604,18 @@ public class LockFreePriorityQueue<E> extends AbstractQueue<E> {
 
         return val;
     }
+
+    public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		LockFreePriorityQueue<Integer> q = new LockFreePriorityQueue<Integer>();
+		q.add(5);
+		q.add(2);
+		q.add(7);
+		q.add(10);
+		q.add(4);
+		while(!q.isEmpty()){
+			System.out.println(q.poll());
+		}
+		System.out.println(q.poll());
+	}
 }
