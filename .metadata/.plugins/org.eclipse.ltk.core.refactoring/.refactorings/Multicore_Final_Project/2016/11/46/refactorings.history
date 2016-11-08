@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename package &apos;Interface&apos; to &apos;interfacepackage&apos;&#x0A;- Original project: &apos;Multicore_Final_Project&apos;&#x0A;- Original element: &apos;Multicore_Final_Project/src/Interface&apos;&#x0A;- Renamed element: &apos;Multicore_Final_Project/src/interfacepackage&apos;&#x0A;- Update references to refactored element&#x0A;- Update textual occurrences in comments and strings" description="Rename package &apos;Interface&apos;" flags="589830" hierarchical="false" id="org.eclipse.jdt.ui.rename.package" input="/src&lt;Interface" name="interfacepackage" qualified="false" references="true" stamp="1478635560028" textual="false" version="1.0"/>
+</session>

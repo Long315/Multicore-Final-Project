@@ -1,7 +1,7 @@
 package lockfreepriorityqueue.nonlinearlizable;
 
+import interfacepackage.ParallelPriorityQueue;
 import lockfreepriorityqueue.nonlinearlizable.PrioritySkipList.Node;
-import finalProj.ParallelPriorityQueue;
 
 public class SkipQueue<T> implements ParallelPriorityQueue<T>{
 
@@ -31,7 +31,14 @@ public class SkipQueue<T> implements ParallelPriorityQueue<T>{
 		SkipQueue<Integer> q = new SkipQueue<Integer>();
 		q.add(5);
 		q.add(4);
+		q.add(5);
+		q.add(4);
+		q.add(4);
 		q.add(8);
+		System.out.print(q.poll());
+		System.out.print(q.poll());
+		System.out.print(q.poll());
+		System.out.print(q.poll());
 		System.out.print(q.poll());
 		System.out.print(q.poll());
 		System.out.print(q.poll());

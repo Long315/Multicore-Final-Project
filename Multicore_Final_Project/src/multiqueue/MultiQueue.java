@@ -1,10 +1,11 @@
 
 package multiqueue;
+import interfacepackage.ParallelPriorityQueue;
+
 import java.util.ArrayList;
 import java.util.Random;
 import java.lang.Integer;
 import java.util.Comparator;
-import finalProj.ParallelPriorityQueue;;
 
 public class MultiQueue<T> implements ParallelPriorityQueue<T>{
 	ArrayList<PriorityBlockingQueue<T>> q;      
