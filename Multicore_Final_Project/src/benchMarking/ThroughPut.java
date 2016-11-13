@@ -3,15 +3,7 @@ package benchMarking;
 import java.lang.reflect.InvocationTargetException;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Queue;
 import java.util.Random;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CyclicBarrier;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import interfacepackage.ParallelPriorityQueue;
 import lockfreepriorityqueue.linearizable.LockFreePriorityQueueWrapper;
@@ -27,43 +19,56 @@ public class ThroughPut {
 		}
 	}
 	
+	public ParallelPriorityQueue factoryMethod(Class<? extends ParallelPriorityQueue> queueClass, int c, int numThreads){
+		
+		try {
+			ParallelPriorityQueue queue;
+			if (c != 0)
+				queue = queueClass.getConstructor(int.class, int.class).newInstance(c, numThreads);
+			else
+				queue = queueClass.getConstructor().newInstance();
+			return queue;
+		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+				| InvocationTargetException | NoSuchMethodException | SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
+		
+	}
+	
 	public int addFixedNumThreadsTest(int numThreads, Class<? extends ParallelPriorityQueue> queueClass, int c) {
 		int sum = 0;
 		int loopCount = 10;
 		
 		for (int loop = 0; loop < loopCount; loop++) {
-			
-			
 			try {
-				ParallelPriorityQueue queue;
 				
-				if (c != 0)
-					queue = queueClass.getConstructor(int.class, int.class).newInstance(c, numThreads);
-				else
-					queue = queueClass.getConstructor().newInstance();
+				// create a queue, may cause exceptions, hance try-catch
+				ParallelPriorityQueue queue = factoryMethod(queueClass, c, numThreads);
 				
-				int[] ProviderCounts = new int[numThreads];
-				ArrayList<Provider> providers = new ArrayList<>();
-				CyclicBarrier gate = new CyclicBarrier(numThreads);
-				Provider.sta();
+				// operation counts for threads
+				int[] ProducerCounts = new int[numThreads];
 				
-				for( int i = 0; i < numThreads; i++) providers.add(new Provider(i, queue, ProviderCounts, gate, valuelist));
-				for (Provider provider : providers) provider.start();
-//				System.out.println("threads started");
-				while (Provider.before < 0 || Instant.now().toEpochMilli() - Provider.before < 1000){
-//					System.out.println(Provider.before);
-				};
+				// instantiate a list of all add threads.
+				ArrayList<Producer> producers = new ArrayList<>();
+				for( int i = 0; i < numThreads; i++) producers.add(new Producer(i, queue, ProducerCounts, valuelist));
 				
-				Provider.stp();
+				// let all threads running
+				for (Producer producer : producers) producer.start();
 				
-				for( int i = 0; i < numThreads; i++) sum += (int)(ProviderCounts[i] / ((Provider.after - Provider.before) / 1000.0));
-			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-					| InvocationTargetException | NoSuchMethodException | SecurityException e) {
+				// let all threads start to add items to the queue
+				Producer.sta();
+				while (Producer.before < 0 || Instant.now().toEpochMilli() - Producer.before < 1000);
+				Producer.stp();
+				
+				// collect # of ops
+				for( int i = 0; i < numThreads; i++) sum += (int)(ProducerCounts[i] / ((Producer.after - Producer.before) / 1000.0));
+				
+			} catch (RuntimeException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
-			
 		}
 		return sum;
 	}
@@ -82,73 +87,61 @@ public class ThroughPut {
 		return datapoints;
 	}
 	
-	public int providerConsumer(int numOfProviders, int numOfConsumers, Class<? extends ParallelPriorityQueue> queueClass, int c){
+	public int producerConsumer(int numOfProducers, int numOfConsumers, Class<? extends ParallelPriorityQueue> queueClass, int c){
 		int sumP = 0;
 		int sumC = 0;
 		int loopCount = 10;
 		int initElementNum = 30000;
+		
 		for (int loop = 0; loop < loopCount; loop++) {
-//			System.out.println("loops");
 			try {
-				// init Queue
-				ParallelPriorityQueue queue;
-				if (c != 0)
-					queue = queueClass.getConstructor(int.class, int.class).newInstance(c, numOfProviders + numOfConsumers);
-				else
-					queue = queueClass.getConstructor().newInstance();
-				for (int i = 0 ; i < initElementNum; i++) queue.add(i);
-//				System.out.println("queue inited");
-				// add tasks
-				Provider.sta();
-				Consumer.sta();
-				int[] ProviderCounts = new int[numOfProviders];
-				int[] ConsumerCounts = new int[numOfConsumers];
-//				ExecutorService threadPool = Executors.newFixedThreadPool(numOfProviders + numOfConsumers);
-//				ArrayList<Thread> tasks = new ArrayList<>();
-				ArrayList<Provider> providers = new ArrayList<>();
-				ArrayList<Consumer> consumers = new ArrayList<>();
-				CyclicBarrier gate = new CyclicBarrier(3);
-				for( int i = 0; i < numOfProviders; i++) providers.add(new Provider(i, queue, ProviderCounts, gate, valuelist));
-				for( int i = 0; i < numOfConsumers; i++) consumers.add(new Consumer(i, queue, ConsumerCounts, gate));
-//				System.out.println("tasks created");
-				for (Provider provider : providers) provider.start();
-				for (Consumer consumer: consumers) consumer.start();
 				
-//				while (!Consumer.running || !Provider.running);
-				while (Provider.before < 0 || Instant.now().toEpochMilli() - Provider.before < 1000);
-				while(Consumer.before < 0 || Instant.now().toEpochMilli() - Consumer.before < 1000);
-				Provider.stp();
+				// create a queue, may cause exceptions, hance try-catch
+				ParallelPriorityQueue queue = factoryMethod(queueClass, c, numOfProducers + numOfConsumers);
+				
+				// this part is to check whether the null pointer exception
+				if (queue == null) {
+					System.err.println("queue instantiate error");
+				}
+				
+				for (int i = 0 ; i < initElementNum; i++) queue.add(i);
+				
+				// add tasks
+				int[] ProducerCounts = new int[numOfProducers];
+				int[] ConsumerCounts = new int[numOfConsumers];
+				ArrayList<Producer> producers = new ArrayList<>();
+				ArrayList<Consumer> consumers = new ArrayList<>();
+				for( int i = 0; i < numOfProducers; i++) producers.add(new Producer(i, queue, ProducerCounts, valuelist));
+				for( int i = 0; i < numOfConsumers; i++) consumers.add(new Consumer(i, queue, ConsumerCounts));
+
+				// get tasks running
+				producers.stream().forEach(e -> e.start());
+				consumers.stream().forEach(e -> e.start());
+				
+				// get tasks doing add and polls
+				Producer.sta();
+				Consumer.sta();
+				while (Producer.before < 0 || Consumer.before < 0 || Instant.now().toEpochMilli() - Producer.before < 1000 || Instant.now().toEpochMilli() - Consumer.before < 1000);
+				Producer.stp();
 				Consumer.stp();
-				for( int i = 0; i < numOfProviders; i++) sumP += (int)(ProviderCounts[i] / ((Provider.after - Provider.before) / 1000.0));
+				
+				// collect # of ops
+				for( int i = 0; i < numOfProducers; i++) sumP += (int)(ProducerCounts[i] / ((Producer.after - Producer.before) / 1000.0));
 				for( int i = 0; i < numOfConsumers; i++) sumC += (int)(ConsumerCounts[i] / ((Consumer.after - Consumer.before) / 1000.0));
-			} catch (InstantiationException e1) {
+				
+			} catch (RuntimeException e) {
 				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (IllegalAccessException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (IllegalArgumentException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (InvocationTargetException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (NoSuchMethodException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (SecurityException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} 
-			
-			
+				e.printStackTrace();
+			}
 		}
+		
+		// see balance or not
 		System.out.println(sumP / loopCount);
 		System.out.println(sumC / loopCount);
 		return (sumP + sumC) / loopCount;
 	}
 	
-	public int[][] providerConsumerDiffNumThread(Class<? extends ParallelPriorityQueue> queueClass, int c) {
+	public int[][] producerConsumerDiffNumThread(Class<? extends ParallelPriorityQueue> queueClass, int c) {
 		
 		int startpoint = 4;
 		int expo = 4;
@@ -160,23 +153,24 @@ public class ThroughPut {
 		
 		for (int i = 0; i < 10; i++) {
 			int N = datapoints[0][i];
-			datapoints[1][i] = providerConsumer(N - N / 2, N / 2, queueClass, c);
+			datapoints[1][i] = producerConsumer(N - N / 2, N / 2, queueClass, c);
 			System.out.format("%d, %d\n", N, datapoints[1][i]);
 		}
+		
 		return datapoints;
 	}
 	
-	public int[][] providerConsumerDiffProducerPortion(Class<? extends ParallelPriorityQueue> queueClass, int c) {
+	public int[][] producerConsumerDiffProducerPortion(Class<? extends ParallelPriorityQueue> queueClass, int c) {
 
-		int[][] datapoints = new int[2][16];
-		for (int i = 0; i < 10; i++) {
-			datapoints[0][i] = i + 22;
+		int[][] datapoints = new int[2][31];
+		for (int i = 0; i < 31; i++) {
+			datapoints[0][i] = i + 1;
 		}
 		
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < 31; i++) {
 			int N = datapoints[0][i];
 //			System.out.println("points");
-			datapoints[1][i] = providerConsumer(N, 32 - N, queueClass, c);
+			datapoints[1][i] = producerConsumer(N, 32 - N, queueClass, c);
 			System.out.format("%d, %d\n", N, datapoints[1][i]);
 		}
 		return datapoints;
@@ -184,8 +178,8 @@ public class ThroughPut {
 	
 	public static void main(String args[]) {
 		ThroughPut tp = new ThroughPut();
-		tp.addVariousNumThreadsTest(LockFreePriorityQueueWrapper.class, 0);
-//		tp.providerConsumerDiffNumThread(LockFreePriorityQueueWrapper.class, 0);
-//		tp.providerConsumerDiffProducerPortion(LockFreePriorityQueueWrapper.class, 0);
+//		tp.addVariousNumThreadsTest(LockFreePriorityQueueWrapper.class, 0);
+//		tp.producerConsumerDiffNumThread(SkipQueue.class, 0);
+		tp.producerConsumerDiffProducerPortion(MultiQueue.class, 3);
 	}
 }

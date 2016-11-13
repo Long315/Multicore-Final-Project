@@ -29,14 +29,14 @@ public class MultiQueue implements ParallelPriorityQueue{
 		// roll the same locked queue and never get in.
 		// though i guess we could be incrementing and having the queue
 		// 1 in front of us fill up forever...
-	    while(!q.get(rand++).add(item));
-		System.out.format("added %d to queue %d\n", item, rand-1);
+	    while(!q.get(rand++ % size).add(item));
+//		System.out.format("added %d to queue %d\n", item, rand-1);
 		return true;
 	}
 	public Integer poll() {
 	    Integer result = null;
 		int startIdx = randomIdx();
-		System.out.format("startIdx = %d\n", startIdx);
+//		System.out.format("startIdx = %d\n", startIdx);
 		int index = startIdx;
 		boolean wrapped = false;
 	    while(result == null){
@@ -53,7 +53,7 @@ public class MultiQueue implements ParallelPriorityQueue{
 						return null;
 					}
 				} while(c[i] == null);
-				System.out.format("candidate %d = %d\n", i, c[i]);
+//				System.out.format("candidate %d = %d\n", i, c[i]);
 			}
 			int mindex;
 			if ( c[0] < c[1] )
