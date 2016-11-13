@@ -1,22 +1,35 @@
 package benchMarking;
 
+import java.time.Instant;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
+
 import interfacepackage.ParallelPriorityQueue;
 
-import java.util.concurrent.Callable;
-
-public class Consumer<T> implements Callable<T>{
+public class Consumer extends Thread{
 	  int Id;
-	  ParallelPriorityQueue<Integer> queue;
+	  ParallelPriorityQueue queue;
 	  int[] counts;
-	  public Consumer(int Id, ParallelPriorityQueue<Integer> queue, int[] counts) {
+	  CyclicBarrier gate;
+	  public Consumer(int Id, ParallelPriorityQueue queue, int[] counts, CyclicBarrier gate) {
 		this.Id = Id;
 	    this.queue = queue;
 	    this.counts = counts;
+	    this.gate = gate;
 	  }
-	  public T call() {
-		  while(true){
-			  queue.removeMin();
+	  public void run() {
+		  try {
+				gate.await();
+			} catch (InterruptedException | BrokenBarrierException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		  before = Instant.now().toEpochMilli();
+//		  System.out.println(running);
+		  while(running){
+			  queue.poll();
 			  counts[Id] = counts[Id] + 1;
 		  }
 	  }
+	  
 }
