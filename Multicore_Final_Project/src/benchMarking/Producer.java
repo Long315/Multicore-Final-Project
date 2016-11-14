@@ -17,6 +17,7 @@ public class Producer extends Thread{
 	    this.counts = counts;
 //	    this.gate = gate;
 	    this.valuelist = valuelist;
+	    this.setPriority(MAX_PRIORITY);
 	  }
 	  
 	  public void run() {

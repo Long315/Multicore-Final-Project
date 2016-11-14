@@ -10,6 +10,7 @@ public class Consumer extends Thread{
 		this.Id = Id;
 	    this.queue = queue;
 	    this.counts = counts;
+	    this.setPriority(MAX_PRIORITY);
 	  }
 	  public void run() {
 		  while(!running);
