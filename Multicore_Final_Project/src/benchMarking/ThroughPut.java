@@ -198,21 +198,21 @@ public class ThroughPut {
 		return datapoints;
 	}
 	
-	public int[][] producerConsumerDiffProducerPortion(Class<? extends ParallelPriorityQueue> queueClass, int c) {
-
-		int[][] datapoints = new int[2][31];
-		for (int i = 0; i < 31; i++) {
-			datapoints[0][i] = i + 1;
-		}
-		
-		for (int i = 0; i < 31; i++) {
-			int N = datapoints[0][i];
-//			System.out.println("points");
-			datapoints[1][i] = producerConsumer(N, 32 - N, queueClass, c);
-			System.out.format("%d, %d\n", N, datapoints[1][i]);
-		}
-		return datapoints;
-	}
+    public int[][] producerConsumerDiffProducerPortion(Class<? extends ParallelPriorityQueue> queueClass, int c) {
+        
+        int[][] datapoints = new int[2][15];
+        for (int i = 0; i < 15; i++) {
+            datapoints[0][i] = i + 1;
+        }
+        
+        for (int i = 0; i < 15; i++) {
+            int N = datapoints[0][i];
+            //			System.out.println("points");
+            datapoints[1][i] = producerConsumer(N, 16 - N, queueClass, c);
+            System.out.format("%d, %d\n", N, datapoints[1][i]);
+        }
+        return datapoints;
+    }
 	
 	public static void main(String args[]) {
 		ThroughPut tp = new ThroughPut();
