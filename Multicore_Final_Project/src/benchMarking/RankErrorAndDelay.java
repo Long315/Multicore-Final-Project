@@ -3,14 +3,17 @@ package benchMarking;
 import java.util.Random;
 import java.util.concurrent.PriorityBlockingQueue;
 
+import lockfreepriorityqueue.linearizable.LockFreePriorityQueueWrapper;
+import lockfreepriorityqueue.nonlinearlizable.SkipQueue;
 import multiqueue.MultiQueue;
 
 public class RankErrorAndDelay {
 	public double rankError(int c) {
 		int loopCount = 100;
 		int sum = 0;
-		for (int loop = 0; loop < loopCount; loop++) {
-			MultiQueue queue = new MultiQueue(c, 1);
+	for (int loop = 0; loop < loopCount; loop++) {
+//			MultiQueue queue = new MultiQueue(c, 1);
+			LockFreePriorityQueueWrapper queue = new LockFreePriorityQueueWrapper();
 			PriorityBlockingQueue<Integer> defaultQueue = new PriorityBlockingQueue<>();
 			Random r = new Random();
 			int N = 10000;

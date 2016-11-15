@@ -17,7 +17,12 @@ public class Consumer extends Thread{
 //		  before = Instant.now().toEpochMilli();
 //		  System.out.println(running);
 		  while(running){
-			  queue.poll();
+			  try{
+				  queue.poll();
+			  } catch (NullPointerException e) {
+				  
+			  }
+			 
 			  counts[Id] = counts[Id] + 1;
 		  }
 	  }

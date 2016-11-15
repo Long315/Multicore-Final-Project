@@ -4,14 +4,14 @@ import java.util.Random;
 
 import interfacepackage.ParallelPriorityQueue;
 
-public class Producer extends Thread{
+public class Alternate extends Thread{
 	  int Id;
 	  ParallelPriorityQueue queue;
 	  int[] counts;
 	  Random r = new Random();
 	  int[] valuelist;
 	  
-	  public Producer(int Id, ParallelPriorityQueue queue, int[] counts, int[] valuelist) {
+	  public Alternate(int Id, ParallelPriorityQueue queue, int[] counts, int[] valuelist) {
 		this.Id = Id;
 	    this.queue = queue;
 	    this.counts = counts;
@@ -25,11 +25,15 @@ public class Producer extends Thread{
 			  while(!running);
 //			  before = Instant.now().toEpochMilli();
 			  while(running){
-				  try{
+				  try {
 					  queue.add(valuelist[i]);
-				  } catch (NullPointerException e) {}
-				  i = (i + 1) % 5000000;
-				  counts[Id] = counts[Id] + 1;
+					  i = (i + 1) % 5000000;
+					  counts[Id] = counts[Id] + 1;
+					  queue.poll();
+					  counts[Id] =  counts[Id] + 1;
+				  } catch (NullPointerException e) {
+					  
+				  }
 			  }
 	  }
 }
