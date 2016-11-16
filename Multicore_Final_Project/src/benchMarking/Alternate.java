@@ -32,7 +32,7 @@ public class Alternate extends Thread{
 					  queue.poll();
 					  counts[Id] =  counts[Id] + 1;
 				  } catch (NullPointerException e) {
-					  
+					  System.err.println("here");
 				  }
 			  }
 	  }

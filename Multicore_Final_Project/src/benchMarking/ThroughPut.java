@@ -34,7 +34,7 @@ public class ThroughPut {
 		try {
 			ParallelPriorityQueue queue;
 			if (c != 0)
-				queue = queueClass.getConstructor(int.class, int.class).newInstance(c, numThreads);
+				queue = queueClass.getConstructor(int.class, int.class, int.class).newInstance(c, numThreads, 2);
 			else
 				queue = queueClass.getConstructor().newInstance();
 			return queue;
@@ -302,6 +302,28 @@ public class ThroughPut {
 	}
 	
 	public static void write2file(int[][] data, String filename) {
+	    
+		try (PrintWriter writer = new PrintWriter(filename + ".txt", "UTF-8");) {
+			int n = data.length;
+			int m = data[0].length;
+			for (int i = 0; i < n; i++) {
+				for (int j = 0; j < m; j++) {
+					writer.print(data[i][j]);
+					writer.print(", ");
+				}
+				writer.print('\n');
+			}
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+	
+	public static void write2file(double[][] data, String filename) {
 	    
 		try (PrintWriter writer = new PrintWriter(filename + ".txt", "UTF-8");) {
 			int n = data.length;

@@ -74,14 +74,14 @@ public class RankErrorAndDelay {
 	}
 	
 	public double[][] rankErrorofDiffC(){
-		double[][] datapoints = new double[7][24];
+		double[][] datapoints = new double[7][7];
 		
-		for (int i = 0; i < 8; i++) {
-			datapoints[0][i] = i + 1;
+		for (int i = 0; i < 7; i++) {
+			datapoints[0][i] = i + 2;
 		}
 		
-		for (int i = 0; i < 8; i++) {
-			double[] analytic = getAnalytic(rankError(i + 1));
+		for (int i = 0; i < 7; i++) {
+			double[] analytic = getAnalytic(rankError(i + 2));
 			for (int j = 1; j < 7; j++) datapoints[j][i] = analytic[j - 1];
 		}
 		
@@ -100,9 +100,9 @@ public class RankErrorAndDelay {
 	public static void main(String args[]) {
 		String postfix = Long.toString(System.currentTimeMillis() / 1000 % 10000);
 		RankErrorAndDelay rd = new RankErrorAndDelay();
-//		rd.rankErrorofDiffC();
+//		ThroughPut.write2file(rd.rankErrorofDiffC(), "Analytic_rankerror_" + postfix);
 		ThroughPut.write2file(rd.dataPoints(false), "RankError_" + postfix);
-		ThroughPut.write2file(rd.dataPoints(true), "Delay_" + postfix);
+//		ThroughPut.write2file(rd.dataPoints(true), "Delay_" + postfix);
 	}
 
 }
