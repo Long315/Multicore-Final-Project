@@ -301,15 +301,15 @@ public class ThroughPut {
 		return datapoints;
 	}
 	
-	public void write2file(int[][] data, String filename) {
+	public static void write2file(int[][] data, String filename) {
 	    
 		try (PrintWriter writer = new PrintWriter(filename + ".txt", "UTF-8");) {
 			int n = data.length;
 			int m = data[0].length;
-			for (int i = 0; i < m; i++) {
-				for (int j = 0; j < n; j++) {
-					writer.print(data[j][i]);
-					writer.print(' ');
+			for (int i = 0; i < n; i++) {
+				for (int j = 0; j < m; j++) {
+					writer.print(data[i][j]);
+					writer.print(", ");
 				}
 				writer.print('\n');
 			}
@@ -335,66 +335,80 @@ public class ThroughPut {
 			
 			switch(s) {
 			case 1: 
-				tp.write2file(tp.producerConsumerDiffNumThread(0.25, SkipQueue.class, 0), "SkipQueue_diffThread_0.25_" + postfix);
+				write2file(tp.producerConsumerDiffNumThread(0.25, SkipQueue.class, 0), "SkipQueue_diffThread_0.25_" + postfix);
 				break;
 			case 2: 
-				tp.write2file(tp.producerConsumerDiffNumThread(0.5, SkipQueue.class, 0), "SkipQueue_diffThread_0.50_" + postfix);
+				write2file(tp.producerConsumerDiffNumThread(0.5, SkipQueue.class, 0), "SkipQueue_diffThread_0.50_" + postfix);
 				break;
 			case 3:
-				tp.write2file(tp.producerConsumerDiffNumThread(0.75, SkipQueue.class, 0), "SkipQueue_diffThread_0.75_" + postfix);
+				write2file(tp.producerConsumerDiffNumThread(0.75, SkipQueue.class, 0), "SkipQueue_diffThread_0.75_" + postfix);
 				break;
 			case 4:
-				tp.write2file(tp.producerConsumerDiffNumThread(0.25, LockFreePriorityQueueWrapper.class, 0), "LockFreePriorityQueueWrapper_diffThread_0.25_" + postfix);
+				write2file(tp.producerConsumerDiffNumThread(0.25, LockFreePriorityQueueWrapper.class, 0), "LockFreePriorityQueueWrapper_diffThread_0.25_" + postfix);
 				break;
 			case 5:
-				tp.write2file(tp.producerConsumerDiffNumThread(0.5, LockFreePriorityQueueWrapper.class, 0), "LockFreePriorityQueueWrapper_diffThread_0.50_" + postfix);
+				write2file(tp.producerConsumerDiffNumThread(0.5, LockFreePriorityQueueWrapper.class, 0), "LockFreePriorityQueueWrapper_diffThread_0.50_" + postfix);
 				break;
 			case 6:
-				tp.write2file(tp.producerConsumerDiffNumThread(0.75, LockFreePriorityQueueWrapper.class, 0), "LockFreePriorityQueueWrapper_diffThread_0.75_" + postfix);
+				write2file(tp.producerConsumerDiffNumThread(0.75, LockFreePriorityQueueWrapper.class, 0), "LockFreePriorityQueueWrapper_diffThread_0.75_" + postfix);
 				break;
 			case 7:
-				tp.write2file(tp.producerConsumerDiffNumThread(0.25, MultiQueue.class, 4), "MultiQueue_diffThread_0.25_c4_" + postfix);
+				write2file(tp.producerConsumerDiffNumThread(0.25, MultiQueue.class, 4), "MultiQueue_diffThread_0.25_c4_" + postfix);
 				break;
 			case 8:
-				tp.write2file(tp.producerConsumerDiffNumThread(0.5, MultiQueue.class, 4), "MultiQueue_diffThread_0.50_c4_" + postfix);
+				write2file(tp.producerConsumerDiffNumThread(0.5, MultiQueue.class, 4), "MultiQueue_diffThread_0.50_c4_" + postfix);
 				break;
 			case 9:
-				tp.write2file(tp.producerConsumerDiffNumThread(0.75, MultiQueue.class, 4), "MultiQueue_diffThread_0.75_c4_" + postfix);
+				write2file(tp.producerConsumerDiffNumThread(0.75, MultiQueue.class, 4), "MultiQueue_diffThread_0.75_c4_" + postfix);
 				break;
 			case 10:
-				tp.write2file(tp.producerConsumerDiffNumThread(0.25, MultiQueue.class, 2), "MultiQueue_diffThread_0.25_c2_" + postfix);
+				write2file(tp.producerConsumerDiffNumThread(0.25, MultiQueue.class, 2), "MultiQueue_diffThread_0.25_c2_" + postfix);
 				break;
 			case 11:
-				tp.write2file(tp.producerConsumerDiffNumThread(0.5, MultiQueue.class, 2), "MultiQueue_diffThread_0.50_c2_" + postfix);
+				write2file(tp.producerConsumerDiffNumThread(0.5, MultiQueue.class, 2), "MultiQueue_diffThread_0.50_c2_" + postfix);
 				break;
 			case 12:
-				tp.write2file(tp.producerConsumerDiffNumThread(0.75, MultiQueue.class, 2), "MultiQueue_diffThread_0.75_c2_" + postfix);
+				write2file(tp.producerConsumerDiffNumThread(0.75, MultiQueue.class, 2), "MultiQueue_diffThread_0.75_c2_" + postfix);
 				break;
 			case 13:
-				tp.write2file(tp.producerConsumerDiffProducerPortion(SkipQueue.class, 0), "SkipQueue_diffProducerPortion_" + postfix);
+				write2file(tp.producerConsumerDiffProducerPortion(SkipQueue.class, 0), "SkipQueue_diffProducerPortion_" + postfix);
 				break;
 			case 14:
-				tp.write2file(tp.producerConsumerDiffProducerPortion(MultiQueue.class, 2), "MultiQueue_diffProducerPortion_c2_" + postfix);
+				write2file(tp.producerConsumerDiffProducerPortion(MultiQueue.class, 2), "MultiQueue_diffProducerPortion_c2_" + postfix);
 				break;
 			case 15:
-				tp.write2file(tp.producerConsumerDiffProducerPortion(MultiQueue.class, 4), "MultiQueue_diffProducerPortion_c4_" + postfix);
+				write2file(tp.producerConsumerDiffProducerPortion(MultiQueue.class, 4), "MultiQueue_diffProducerPortion_c4_" + postfix);
 				break;
 			case 16:
-				tp.write2file(tp.producerConsumerDiffProducerPortion(LockFreePriorityQueueWrapper.class, 0), "LockFreePriorityQueueWrapper_diffProducerPortion_" + postfix);
+				write2file(tp.producerConsumerDiffProducerPortion(LockFreePriorityQueueWrapper.class, 0), "LockFreePriorityQueueWrapper_diffProducerPortion_" + postfix);
 				break;
 			case 17:
-				tp.write2file(tp.alternateDiffNumThreads(MultiQueue.class, 2), "MultiQueue_PoshPop_c2_" + postfix);
+				write2file(tp.alternateDiffNumThreads(MultiQueue.class, 2), "MultiQueue_PoshPop_c2_" + postfix);
 				break;
 			case 18:
-				tp.write2file(tp.alternateDiffNumThreads(MultiQueue.class, 4), "MultiQueue_PoshPop_c4_" + postfix);
+				write2file(tp.alternateDiffNumThreads(MultiQueue.class, 4), "MultiQueue_PoshPop_c4_" + postfix);
 				break;
 			case 19:
-				tp.write2file(tp.alternateDiffNumThreads(SkipQueue.class, 0), "SkipQueue_PoshPop_" + postfix);
+				write2file(tp.alternateDiffNumThreads(SkipQueue.class, 0), "SkipQueue_PoshPop_" + postfix);
 				break;
 			case 20:
-				tp.write2file(tp.alternateDiffNumThreads(LockFreePriorityQueueWrapper.class, 0), "LockFreePriorityQueueWrapper_PoshPop_" + postfix);
+				write2file(tp.alternateDiffNumThreads(LockFreePriorityQueueWrapper.class, 0), "LockFreePriorityQueueWrapper_PoshPop_" + postfix);
 				break;
-				
+			case 21:
+				write2file(tp.alternateDiffNumThreads(MultiQueue.class, 8), "MultiQueue_PoshPop_c8_" + postfix);
+				break;
+			case 22:
+				write2file(tp.producerConsumerDiffNumThread(0.25, MultiQueue.class, 8), "MultiQueue_diffThread_0.25_c8_" + postfix);
+				break;
+			case 23:
+				write2file(tp.producerConsumerDiffNumThread(0.5, MultiQueue.class, 8), "MultiQueue_diffThread_0.50_c8_" + postfix);
+				break;
+			case 24:
+				write2file(tp.producerConsumerDiffNumThread(0.75, MultiQueue.class, 8), "MultiQueue_diffThread_0.75_c8_" + postfix);
+				break;
+			default:
+				System.out.println("Invalid Argument! Argument should be a number between 1 to 24 inclusive.");
+				break;
 			}
 			
 		} finally {
