@@ -9,12 +9,14 @@ import java.util.Comparator;
 
 public class MultiQueue implements ParallelPriorityQueue{
 	ArrayList<PriorityBlockingQueue<Integer>> q;      
-    int size;	
+    int size;
+    int poll_num;
 	Random r = new Random();
-	public MultiQueue(int c, int t) {
+	public MultiQueue(int c, int t, int p) {
 	    // c = constant (defines constant time access to queue as 1/c)
 	    // t = num threads accessing queue
 		size = c * t;
+		poll_num = p;
 	    q = new ArrayList<PriorityBlockingQueue<Integer>>();
         for (int i = 0; i < size; i++){
 			q.add(new PriorityBlockingQueue<Integer>());
@@ -40,9 +42,9 @@ public class MultiQueue implements ParallelPriorityQueue{
 		int index = startIdx;
 		boolean wrapped = false;
 	    while(result == null){
-			Integer[] c = new Integer[2];  // candidates
-			int[] idx = new int[2];  // indices
-			for(int i = 0; i < 2; i++){
+			Integer[] c = new Integer[poll_num];  // candidates
+			int[] idx = new int[poll_num];  // indices
+			for(int i = 0; i < poll_num; i++){
 				do {
 					idx[i] = index;
 					index = (index + 1) % size;
@@ -55,11 +57,10 @@ public class MultiQueue implements ParallelPriorityQueue{
 				} while(c[i] == null);
 //				System.out.format("candidate %d = %d\n", i, c[i]);
 			}
-			int mindex;
-			if ( c[0] < c[1] )
-				mindex = 0;
-			else
-				mindex = 1;
+			int mindex=0;
+			for (int i = 0; i < poll_num; i++){
+			    if (c[i] < c[mindex]) mindex = i;
+			}
 			result = q.get(idx[mindex]).pollAfterPeek();
 	    }
 		return result;
@@ -70,7 +71,7 @@ public class MultiQueue implements ParallelPriorityQueue{
 	}
 	
 	public static void main(String[] args) {
-        MultiQueue mq = new MultiQueue(2, 1);
+        MultiQueue mq = new MultiQueue(2, 1, 2);
 	    mq.add(5);
 	    mq.add(9);
 	    mq.add(3);

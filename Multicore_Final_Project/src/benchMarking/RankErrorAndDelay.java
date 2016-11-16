@@ -13,7 +13,7 @@ public class RankErrorAndDelay {
 		int loopCount = 100;
 		int[] errors = new int[loopCount];
 		for (int loop = 0; loop < loopCount; loop++) {
-			MultiQueue queue = new MultiQueue(c, 1);
+			MultiQueue queue = new MultiQueue(c, 1, 2);
 //			LockFreePriorityQueueWrapper queue = new LockFreePriorityQueueWrapper();
 			PriorityBlockingQueue<Integer> defaultQueue = new PriorityBlockingQueue<>();
 			Random r = new Random();
@@ -35,7 +35,7 @@ public class RankErrorAndDelay {
 		int loopCount = 100;
 		int[] delays = new int[loopCount];
 		for (int loop = 0; loop < loopCount; loop++) {
-			MultiQueue queue = new MultiQueue(c, 1);
+			MultiQueue queue = new MultiQueue(c, 1, 2);
 //			LockFreePriorityQueueWrapper queue = new LockFreePriorityQueueWrapper();
 			PriorityBlockingQueue<Integer> defaultQueue = new PriorityBlockingQueue<>();
 			Random r = new Random();
