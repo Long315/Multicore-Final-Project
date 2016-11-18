@@ -42,25 +42,26 @@ public class MultiQueue implements ParallelPriorityQueue{
 		int index = startIdx;
 		boolean wrapped = false;
 	    while(result == null){
-			Integer[] c = new Integer[poll_num];  // candidates
-			int[] idx = new int[poll_num];  // indices
-			for(int i = 0; i < poll_num; i++){
+			Integer[] c = new Integer[2];  // candidates
+			int[] idx = new int[2];  // indices
+			for(int i = 0; i < 2; i++){
 				do {
 					idx[i] = index;
 					index = (index + 1) % size;
 					if (index == startIdx) wrapped = true;
 					c[i] = q.get(idx[i]).peek();
 					if (c[i] == null && wrapped){
-					    if (i == 0) return null;
-					    else break;
+						if (i == 1) return c[0];
+						return null;
 					}
 				} while(c[i] == null);
 //				System.out.format("candidate %d = %d\n", i, c[i]);
 			}
-			int mindex=0;
-			for (int i = 0; i < poll_num; i++){
-			    if (c[i] != null && c[i] < c[mindex]) mindex = i;
-			}
+			int mindex;
+			if ( c[0] < c[1] )
+				mindex = 0;
+			else
+				mindex = 1;
 			result = q.get(idx[mindex]).pollAfterPeek();
 	    }
 		return result;

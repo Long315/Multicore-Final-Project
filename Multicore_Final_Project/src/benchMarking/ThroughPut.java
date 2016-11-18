@@ -246,10 +246,10 @@ public class ThroughPut {
 		return datapoints;
 	}
 	
-	public int alternateFixedThreads(int numThreads, Class<? extends ParallelPriorityQueue> queueClass, int c) {
+	public int alternateFixedThreads(int numThreads, Class<? extends ParallelPriorityQueue> queueClass, int c, int init) {
 		int sum = 0;
 		int loopCount = 10;
-		int initElementNum = 300;
+		int initElementNum = init;
 		
 		for (int loop = 0; loop < loopCount; loop++) {
 			try {
@@ -295,11 +295,30 @@ public class ThroughPut {
 		
 		for (int i = 0; i < 32; i++) {
 			int N = datapoints[0][i];
-			datapoints[1][i] = alternateFixedThreads(N, queueClass, c);
+			datapoints[1][i] = alternateFixedThreads(N, queueClass, c, 300);
 			System.out.format("%d, %d\n", N, datapoints[1][i]);
 		}
 		return datapoints;
 	}
+
+	public int[][] alternateDiffItemInQueue() {
+                int[][] datapoints = new int[6][4];
+                datapoints[0][0] = 1000;
+                datapoints[0][1] = 10000;
+                datapoints[0][2] = 100000;
+                datapoints[0][3] = 1000000;
+
+                for (int i = 0; i < 4; i++) {
+                        int N = datapoints[0][i];
+                        datapoints[1][i] = alternateFixedThreads(4, LockFreePriorityQueueWrapper.class, 0, N);
+                        datapoints[2][i] = alternateFixedThreads(4, SkipQueue.class, 0, N);
+                        datapoints[3][i] = alternateFixedThreads(4, MultiQueue.class, 2, N);
+                        datapoints[4][i] = alternateFixedThreads(4, MultiQueue.class, 4, N);
+                        datapoints[5][i] = alternateFixedThreads(4, MultiQueue.class, 8, N);
+                        System.out.format("%d, %d\n", N, datapoints[1][i]);
+                }
+                return datapoints;
+        }
 	
 	public static void write2file(int[][] data, String filename) {
 	    
@@ -309,7 +328,7 @@ public class ThroughPut {
 			for (int i = 0; i < n; i++) {
 				for (int j = 0; j < m; j++) {
 					writer.print(data[i][j]);
-					writer.print(", ");
+					if (j != m - 1) writer.print(", ");
 				}
 				writer.print('\n');
 			}
@@ -331,7 +350,7 @@ public class ThroughPut {
 			for (int i = 0; i < n; i++) {
 				for (int j = 0; j < m; j++) {
 					writer.print(data[i][j]);
-					writer.print(", ");
+					if(j != m - 1) writer.print(", ");
 				}
 				writer.print('\n');
 			}
@@ -346,7 +365,7 @@ public class ThroughPut {
 	}
 	
 	public static void main(String args[]) {
-		String postfix = Long.toString(System.currentTimeMillis() / 1000 % 10000);
+		String postfix = Long.toString(System.currentTimeMillis());
 		ThroughPut tp = new ThroughPut();
 		
 		String arg = args[0];
@@ -427,6 +446,9 @@ public class ThroughPut {
 				break;
 			case 24:
 				write2file(tp.producerConsumerDiffNumThread(0.75, MultiQueue.class, 8), "MultiQueue_diffThread_0.75_c8_" + postfix);
+				break;
+			case 25:
+				write2file(tp.alternateDiffItemInQueue(), "diffNThroughPut_" + postfix);
 				break;
 			default:
 				System.out.println("Invalid Argument! Argument should be a number between 1 to 24 inclusive.");

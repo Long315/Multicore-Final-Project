@@ -102,7 +102,7 @@ public class RankErrorAndDelay {
 		RankErrorAndDelay rd = new RankErrorAndDelay();
 //		ThroughPut.write2file(rd.rankErrorofDiffC(), "Analytic_rankerror_" + postfix);
 		ThroughPut.write2file(rd.dataPoints(false), "RankError_" + postfix);
-//		ThroughPut.write2file(rd.dataPoints(true), "Delay_" + postfix);
+		ThroughPut.write2file(rd.dataPoints(true), "Delay_" + postfix);
 	}
 
 }
